@@ -1,3 +1,4 @@
+import { ProductActions, UpdateProduct } from './../state/product.actions';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -67,11 +68,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     });
 
     this.store.pipe(select(fromProduct.getCurrentProduct),
-    takeWhile(() => this.componentActive)).subscribe(
+    takeWhile(() => this .componentActive)).subscribe(
       currenctProduct => this.displayProduct(currenctProduct)
     );
 
-    // Watch for value changes
+    // Watch for value  changes
     this.productForm.valueChanges.subscribe(
       value => this.displayMessage = this.genericValidator.processMessages(this.productForm)
     );
@@ -146,10 +147,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             error: err => this.errorMessage = err.error
           });
         } else {
-          this.productService.updateProduct(p).subscribe({
-            next: product => this.store.dispatch(new productActions.SetCurrentProduct(product)),
-            error: err => this.errorMessage = err.error
-          });
+          this.store.dispatch(new productActions.UpdateProduct(p));
         }
       }
     } else {
