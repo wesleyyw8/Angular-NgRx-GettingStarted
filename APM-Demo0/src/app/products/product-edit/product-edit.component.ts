@@ -1,4 +1,4 @@
-import { ProductActions, UpdateProduct } from './../state/product.actions';
+import { ProductActions, UpdateProduct, DeleteProduct } from './../state/product.actions';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -123,7 +123,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (this.product && this.product.id) {
       if (confirm(`Really delete the product: ${this.product.productName}?`)) {
         this.productService.deleteProduct(this.product.id).subscribe({
-          next: () => this.store.dispatch(new productActions.ClearCurrentProduct()),
+          next: () => this.store.dispatch(new productActions.DeleteProduct(this.product)),
           error: err => this.errorMessage = err.error
         });
       }
@@ -142,10 +142,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         const p = { ...this.product, ...this.productForm.value };
 
         if (p.id === 0) {
-          this.productService.createProduct(p).subscribe({
-            next: product => this.store.dispatch(new productActions.SetCurrentProduct(product)),
-            error: err => this.errorMessage = err.error
-          });
+          this.store.dispatch(new productActions.CreateProduct(p));
         } else {
           this.store.dispatch(new productActions.UpdateProduct(p));
         }

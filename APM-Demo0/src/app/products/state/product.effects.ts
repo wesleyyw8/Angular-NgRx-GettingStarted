@@ -30,4 +30,26 @@ export class ProductEffects {
         catchError(err => of(new productActions.UpdateProductFail(err)))
       ))
   );
+
+  @Effect()
+  createProduct$: Observable<Action> = this.actions$.pipe(
+    ofType(productActions.ProductActionTypes.CreateProduct),
+    map((action: productActions.CreateProduct) => action.payload),
+    mergeMap((product: Product) =>
+      this.productService.createProduct(product).pipe(
+        map(createdProduct => (new productActions.CreateProductSuccess(createdProduct))),
+        catchError(err => of(new productActions.CreateProductFail(err)))
+      ))
+  );
+
+  @Effect()
+  deleteProduct$: Observable<Action> = this.actions$.pipe(
+    ofType(productActions.ProductActionTypes.DeleteProduct),
+    map((action: productActions.DeleteProduct) => action.payload),
+    mergeMap((product: Product) =>
+      this.productService.deleteProduct(product.id).pipe(
+        map(createdProduct => (new productActions.DeleteProductSuccess(product))),
+        catchError(err => of(new productActions.DeleteProductFail(err)))
+      ))
+  );
 }

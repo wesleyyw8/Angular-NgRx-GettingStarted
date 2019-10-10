@@ -1,7 +1,7 @@
 import { Product } from '../product';
 import * as fromRoot from '../../state/app.state';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { ProductActions, ProductActionTypes } from './product.actions';
+import { ProductActions, ProductActionTypes, UpdateProductFail } from './product.actions';
 
 export interface State extends fromRoot.State {
   products: ProductState;
@@ -93,6 +93,49 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
         ...state,
         products: [],
         error: action.payload
+      };
+    case ProductActionTypes.UpdateProductSuccess:
+      const updatedProducts = state.products.map(
+        item => action.payload.id === item.id ? action.payload : item
+      );
+      return {
+        ...state,
+        products: updatedProducts,
+        currentProductId: action.payload.id,
+        error: ''
+      };
+    case ProductActionTypes.UpdateProductFail:
+      return {
+        ...state,
+        products: [],
+        error: action.payload
+      };
+    case ProductActionTypes.CreateProductSuccess:
+      return {
+        ...state,
+        error: '',
+        products: [...state.products, action.payload]
+      };
+    case ProductActionTypes.CreateProductFail:
+      return {
+        ...state,
+        error: action.payload
+      };
+    case ProductActionTypes.DeleteProductFail:
+      return {
+        ...state,
+        error: action.payload
+      };
+    case ProductActionTypes.DeleteProductSuccess:
+      const newProducts = state.products.filter(item => {
+        if (item.id !== action.payload.id) {
+          return true;
+        }
+      });
+      return {
+        ...state,
+        products: newProducts,
+        error: '',
       };
     default:
       return state;
