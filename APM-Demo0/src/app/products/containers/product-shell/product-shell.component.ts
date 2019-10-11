@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { Product } from '../../product';
 import { ProductService } from '../../product.service';
@@ -8,9 +8,10 @@ import * as productActions from '../../state/product.actions';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
-  templateUrl: './product-shell.component.html'
+  templateUrl: './product-shell.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductShellComponent implements OnInit, OnDestroy {
+export class ProductShellComponent implements OnInit {
   errorMessage$: Observable<string>;
   displayCode$: Observable<boolean>;
   products$: Observable<Product[]>;
